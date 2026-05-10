@@ -1,0 +1,17 @@
+{
+  "name": "ggp3-cloudrun",
+  "version": "1.0.0",
+  "description": "星落镇的猪猪勇者 - 微信云托管",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "morgan": "^1.10.0"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  }
+}
