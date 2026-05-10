@@ -902,8 +902,13 @@ function renderBattle(){
       if(hv&&can){X.strokeStyle='#ffcc88';X.lineWidth=2;rr(bx,by,bw-4,60,7);X.stroke();}
       X.fillStyle=can?'#fff':'#555';X.font='bold 13px "Microsoft YaHei"';X.textAlign='center';X.fillText(sk.ico+' '+sk.n,bx+(bw-4)/2,by+22);
       X.fillText(`MP:${cost} ${sk.d}`,bx+(bw-4)/2,by+44);
-    }X.fillStyle='#aaa';X.font='11px "Microsoft YaHei"';X.fillText('[ESC返回]',sx+210,sy+94);X.textAlign='start';
+    }X.fillStyle='#aaa';X.font='11px "Microsoft YaHei"';X.textAlign='center';X.fillText('[点空白处取消]',sx+210,sy+94);X.textAlign='start';
     if(!bat.anim){for(let i=0;i<4;i++){if(player.skillSlots[i])clk.push({x:sx+10+i*bw,y:sy+10,w:bw-4,h:60,act:'sk'+i});}}
+    // 技能面板外点击关闭(全屏透明遮罩)
+    clk.push({x:0,y:0,w:W,h:sy,act:'bs_cancel',ov:true});
+    clk.push({x:0,y:sy+100,w:W,h:H-sy-100,act:'bs_cancel',ov:true});
+    clk.push({x:0,y:sy,w:sx,w:sy+100-sy,act:'bs_cancel',ov:true});
+    clk.push({x:sx+420,y:sy,w:W-sx-420,h:100,act:'bs_cancel',ov:true});
   }
 }
 
@@ -1495,7 +1500,8 @@ function doAct(act){
   switch(act){
     case'new':startNew();break;case'cont':doCont();break;case'save':svGame();ntf('游戏已保存！','info');break;
     case'inv':gs=ST.I;ps=ST.P;break;case'shop':gs=ST.S;ps=ST.P;break;case'craft':gs=ST.CR;ps=ST.P;break;case'skillShop':gs=ST.SK;ps=ST.P;break;
-    case'closeP':gs=ps||ST.P;_shTab=0;break;case'closeOF':if(ofr){player.xp+=ofr.xp;player.gold+=ofr.gold;chkLvlUp();ofr=null;}gs=ST.P;svGame();break;case'closeBW':bwr=null;gs=ST.P;break;case'closeGO':gs=ST.P;break;
+    case'closeP':gs=ps||ST.P;_shTab=0;break;
+    case'bs_cancel':if(gs===ST.B){bso=false;}break;case'closeOF':if(ofr){player.xp+=ofr.xp;player.gold+=ofr.gold;chkLvlUp();ofr=null;}gs=ST.P;svGame();break;case'closeBW':bwr=null;gs=ST.P;break;case'closeGO':gs=ST.P;break;
     case'petal':startPetal();break;case'doCraft':doCraft();break;case'shtab_0':_shTab=0;break;case'shtab_1':_shTab=1;break;case'pg_prev':if(_ipg>0)_ipg--;break;case'pg_next':_ipg++;break;case'advDia':advDia();break;
     case'home':if(cmap&&cmap.id!=='town'){prevMid=mid;fto=null;fa=0;fd=0;mid='town';cmap=maps['town'];player.x=cmap.sp.x;player.y=cmap.sp.y;updCam();cam.x=cam.tx;cam.y=cam.ty;svGame();gs=ST.P;ntf('回到了星落镇','info');}break;
     case'goback':{const pm=(prevMid&&maps[prevMid])?prevMid:'meadow';prevMid='town';mid=pm;cmap=maps[pm];player.x=cmap.sp.x;player.y=cmap.sp.y;if(!cmap.mons||cmap.mons.length<5)popMon(pm);updCam();cam.x=cam.tx;cam.y=cam.ty;svGame();gs=ST.P;ntf('返回'+cmap.n,'info');}break;
