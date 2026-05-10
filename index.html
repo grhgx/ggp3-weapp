@@ -813,6 +813,15 @@ function renderHUD(){
     X.fillStyle=pOn?'rgba(255,160,200,.7)':'rgba(255,255,255,.18)';rr(pbx,pby,40,40,20);X.fill();
     X.fillStyle='#fff';X.font='18px "Microsoft YaHei"';X.textAlign='center';X.textBaseline='middle';X.fillText('🌸',pbx+20,pby+20);X.textAlign='start';X.textBaseline='alphabetic';clk.push({x:pbx,y:pby,w:40,h:40,act:'petal'});
   }
+  // NPC接近提示（界面底部）
+  if(gs===ST.P&&cmap&&player&&!dia){
+    const nearNpc=cmap.npc.find(npc=>Math.hypot(player.x-npc.x,player.y-npc.y)<70);
+    if(nearNpc){
+      X.fillStyle='rgba(0,0,0,.82)';rr(W/2-160,H-108,320,28,9);X.fill();
+      X.strokeStyle='rgba(255,215,0,.35)';X.lineWidth=1;rr(W/2-160,H-108,320,28,9);X.stroke();
+      X.fillStyle='#ffd700';X.font='12px "Microsoft YaHei"';X.textAlign='center';X.fillText('💬 按空格键或点击NPC对话',W/2,H-88);X.textAlign='start';
+    }
+  }
   // 触屏虚拟摇杆
   if(jActive){
     X.fillStyle='rgba(255,255,255,.06)';X.beginPath();X.arc(js.a.x,js.a.y,JR,0,T);X.fill();
@@ -1235,14 +1244,14 @@ function doNPC(npc){SFX.play('click');const key=npc.n,mem=npcMem[key]=npcMem[key
   // 生成对话
   let lines=[...npc.dlg];
   // 任务相关对话
-  if(mem.quest&&mem.quest.done){lines.push('感谢你完成了任务！这是你的奖励~');lines.push('下次再来找我吧！');}
+  if(mem.quest&&mem.quest.done){lines.push('感谢你完成了任务！这是你的奖励~');lines.push('下次再来找我吧！');mem.quest=null;}
   else if(mem.quest&&!mem.quest.done){
     const q=mem.quest;
     if(q.type==='kill')lines.push(`任务进度: 击败怪物 ${q.progress}/${q.target}`);
     else if(q.type==='gold')lines.push(`任务进度: 收集金币 ${Math.min(player.gold,q.target)}/${q.target}`);
     lines.push('完成后记得来找我领奖励哦！');
-  }else if(mem.talk%3===0&&!mem.quest){
-    // 每3次对话给新任务
+  }else if(mem.talk>=3&&!mem.quest){
+    // 3次对话以上触发任务
     const qt=PK(['kill','gold','collect','boss','explore','equip']);
     if(qt==='kill'){mem.quest={type:'kill',target:5+RI(0,8),progress:0,reward:{xp:80+RI(0,120),gold:60+RI(0,100),eq:true},done:false};lines.push('🔹新任务: 击败'+mem.quest.target+'只怪物！奖励史诗装备');}
     else if(qt==='gold'){mem.quest={type:'gold',target:150+RI(0,300),progress:0,reward:{xp:60+RI(0,100),gold:80+RI(0,120),eq:true},done:false};lines.push(`🔹新任务: 收集${mem.quest.target}金币！奖励史诗装备`);}
