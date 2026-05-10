@@ -903,9 +903,9 @@ function renderBattle(){
       X.fillStyle=can?'#fff':'#555';X.font='bold 13px "Microsoft YaHei"';X.textAlign='center';X.fillText(sk.ico+' '+sk.n,bx+(bw-4)/2,by+22);
       X.fillText(`MP:${cost} ${sk.d}`,bx+(bw-4)/2,by+44);
     }X.fillStyle='#aaa';X.font='11px "Microsoft YaHei"';X.textAlign='center';X.fillText('[点空白处取消]',sx+210,sy+94);X.textAlign='start';
-    // 技能面板外点击取消（按钮先push，遮罩后push，遮罩在数组后面不覆盖按钮）
-    if(!bat.anim){for(let i=0;i<4;i++){if(player.skillSlots[i])clk.push({x:sx+10+i*bw,y:sy+10,w:bw-4,h:60,act:'sk'+i});}}
+    // 技能面板外点击取消（按钮后push，确保在遮罩之后，遍历从后往前优先匹配按钮）
     clk.push({x:0,y:0,w:W,h:H,act:'bs_cancel'});
+    if(!bat.anim){for(let i=0;i<4;i++){if(player.skillSlots[i])clk.push({x:sx+10+i*bw,y:sy+10,w:bw-4,h:60,act:'sk'+i});}}
   }
 }
 
