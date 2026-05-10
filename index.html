@@ -7,9 +7,19 @@
 *{margin:0;padding:0;box-sizing:border-box;touch-action:none;-webkit-touch-callout:none}
 body{background:#06060f;display:flex;justify-content:center;align-items:center;height:100dvh;overflow:hidden;font-family:'Microsoft YaHei',sans-serif;user-select:none;-webkit-user-select:none;position:fixed;width:100%;top:0;left:0}
 canvas{display:block;border-radius:6px;box-shadow:0 0 80px rgba(150,120,220,0.25),0 0 140px rgba(255,140,180,0.12);}
-/* 自适应: 以高度为基准缩放，宽度自适应 */
-@media (max-aspect-ratio: 1060/660){canvas{height:100dvh;width:auto;}}
-@media (min-aspect-ratio: 1060/660){canvas{width:100vw;height:auto;}}
+/* 手机强制横屏 */
+@media (max-width: 768px){
+  body{width:100vh;height:100vw;transform:rotate(0deg);transform-origin:0 0;position:fixed;top:0;left:0;}
+  canvas{max-height:100vw;max-width:100vh;}
+  /* 自适应: 以高度为基准缩放，宽度自适应 */
+  @media (max-aspect-ratio: 1060/660){canvas{height:100vw;width:auto;}}
+  @media (min-aspect-ratio: 1060/660){canvas{width:100vh;height:auto;}}
+}
+/* 电脑保持不变 */
+@media (min-width: 769px){
+  @media (max-aspect-ratio: 1060/660){canvas{height:100dvh;width:auto;}}
+  @media (min-aspect-ratio: 1060/660){canvas{width:100vw;height:auto;}}
+}
 </style>
 </head>
 <body>
@@ -1576,8 +1586,17 @@ function doCont(){
 // ═══════ 自适应缩放 ═══════
 function resizeCanvas(){
   const c=document.getElementById('g'),s=document.getElementById('szStyle');
-  const r=1060/660; // 宽高比
-  let w=window.innerWidth,h=window.innerHeight;
+  const r=1060/660;
+  const isMobile=window.innerWidth<=768;
+  let w,h;
+  if(isMobile){
+    // 手机横屏：宽高互换，以高度为基准
+    w=window.innerHeight;
+    h=window.innerWidth;
+  }else{
+    w=window.innerWidth;
+    h=window.innerHeight;
+  }
   if(w/h>r){w=h*r;}else{h=w/r;}
   s.textContent=`canvas{width:${w}px!important;height:${h}px!important;}`;
 }
